@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050b08">
+<title>MITRAN HACKER LAB</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#050b08;color:#00ff91;font-family:Arial,sans-serif}
+header{padding:22px;background:#091810;border-bottom:1px solid #00ff91}
+header h1{margin:0;font-size:24px;letter-spacing:2px}
+header p{color:#9db9a8;font-size:12px}
+nav{display:flex;gap:6px;flex-wrap:wrap;padding:12px;background:#07120b;position:sticky;top:0;z-index:5}
+button{background:#06351e;color:#00ff91;border:1px solid #16864d;padding:12px;border-radius:8px;cursor:pointer}
+nav button{flex:1;min-width:75px;font-size:12px}
+main{max-width:850px;margin:auto;padding:14px}
+section{display:none}
+section.active{display:block}
+.card{background:#0b1710;border:1px solid #155b38;border-radius:13px;padding:16px;margin-bottom:14px}
+h2{font-size:17px}
+p{color:#b5cabc;line-height:1.5}
+input{width:100%;padding:13px;margin:8px 0;background:#030906;color:#00ff91;border:1px solid #26764a;border-radius:7px}
+.result{background:#020805;padding:13px;border-radius:8px;color:#a8ffc9;white-space:pre-wrap;overflow-wrap:anywhere;min-height:35px;margin-top:10px;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tile{background:#0b2115;border:1px solid #17633c;padding:14px;border-radius:10px}
+.tile b{display:block;margin-bottom:6px}
+small{color:#86a692}
+footer{text-align:center;padding:25px;color:#64816e;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+<h1>⌘ MITRAN HACKER LAB</h1>
+<p>CYBERSECURITY • NETWORK TOOLS • ETHICAL HACKING</p>
+<div>● SYSTEM ONLINE</div>
+</header>
+
+<nav>
+<button onclick="page('home')">Home</button>
+<button onclick="page('network')">Network</button>
+<button onclick="page('website')">Website</button>
+<button onclick="page('password')">Password</button>
+<button onclick="page('qr')">QR Reader</button>
+<button onclick="page('terminal')">Terminal</button>
+<button onclick="page('history')">History</button>
+</nav>
+
+<main>
+<section id="home" class="active">
+<div class="card">
+<h2>CYBER DASHBOARD</h2>
+<p>Welcome to MITRAN HACKER LAB.</p>
+<div class="grid">
+<div class="tile"><b>NETWORK</b><small>Connection tools</small></div>
+<div class="tile"><b>WEBSITE</b><small>Security inspection</small></div>
+<div class="tile"><b>PASSWORD</b><small>Strength analysis</small></div>
+<div class="tile"><b>TERMINAL</b><small>Command console</small></div>
+</div>
+</div>
+<div class="card">
+<h2>DEVICE INFORMATION</h2>
+<div id="device" class="result"></div>
+</div>
+</section>
+
+<section id="network">
+<div class="card">
+<h2>NETWORK CONNECTION</h2>
+<button onclick="networkInfo()">Check Connection</button>
+<div id="networkResult" class="result"></div>
+</div>
+<div class="card">
+<h2>PUBLIC IP LOOKUP</h2>
+<button onclick="ipLookup()">Find My IP</button>
+<div id="ipResult" class="result">Ready.</div>
+</div>
+<div class="card">
+<h2>DNS LOOKUP</h2>
+<input id="dnsDomain" placeholder="example.com">
+<button onclick="dnsLookup()">Lookup DNS</button>
+<div id="dnsResult" class="result"></div>
+</div>
+</section>
+
+<section id="website">
+<div class="card">
+<h2>WEBSITE SECURITY CHECKER</h2>
+<p>Inspect a website's public security headers.</p>
+<input id="site" placeholder="https://example.com">
+<button onclick="checkSite()">Check Website</button>
+<div id="siteResult" class="result"></div>
+</div>
+<div class="card">
+<h2>SSL / HTTPS CHECK</h2>
+<input id="sslSite" placeholder="https://example.com">
+<button onclick="checkSSL()">Check HTTPS</button>
+<div id="sslResult" class="result"></div>
+</div>
+</section>
+
+<section id="password">
+<div class="card">
+<h2>PASSWORD STRENGTH ANALYZER</h2>
+<p>Use a sample password. Do not enter your real account password.</p>
+<input id="pass" type="password" placeholder="Enter sample password">
+<button onclick="togglePass()">Show / Hide</button>
+<button onclick="testPassword()">Analyze Password</button>
+<div id="passResult" class="result"></div>
+</div>
+</section>
+
+<section id="qr">
+<div class="card">
+<h2>WI-FI QR READER</h2>
+<p>Select a Wi-Fi QR screenshot or image. Reading is supported when your browser has BarcodeDetector.</p>
+<input type="file" id="qrFile" accept="image/*">
+<button onclick="readQR()">Read QR Image</button>
+<div id="qrResult" class="result"></div>
+</div>
+</section>
+
+<section id="terminal">
+<div class="card">
+<h2>CYBER TERMINAL</h2>
+<p>Local educational command console.</p>
+<input id="command" placeholder="Type help">
+<button onclick="runCommand()">Execute</button>
+<div id="terminalResult" class="result">MITRAN TERMINAL READY.</div>
+</div>
+</section>
+
+<section id="history">
+<div class="card">
+<h2>SCAN HISTORY</h2>
+<button onclick="clearHistory()">Clear History</button>
+<div id="historyResult" class="result">No activity yet.</div>
+</div>
+</section>
+</main>
+<footer>MITRAN CYBER LAB © 2026</footer>
+
+<script>
+const historyItems=[];
+function page(id){
+document.querySelectorAll('main section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+function log(msg){
+historyItems.unshift(new Date().toLocaleString()+' — '+msg);
+document.getElementById('historyResult').textContent=historyItems.join('\n');
+}
+document.getElementById('device').textContent=
+'Browser: '+navigator.userAgent+
+'\nOnline: '+(navigator.onLine?'Yes':'No')+
+'\nPlatform: '+(navigator.platform||'Unavailable');
+
+function networkInfo(){
+document.getElementById('networkResult').textContent=
+'Connection: '+(navigator.onLine?'Online':'Offline')+
+'\nConnection type: '+(navigator.connection?.effectiveType||'Not provided by browser')+
+'\nSecure context: '+(isSecureContext?'Yes':'No')+
+'\nWi-Fi hardware scanning: Not available to ordinary web pages.';
+log('Network information checked');
+}
+async function ipLookup(){
+let el=document.getElementById('ipResult');
+el.textContent='Looking up public IP...';
+try{
+let r=await fetch('https://api.ipify.org?format=json');
+if(!r.ok)throw Error('Lookup unavailable');
+let d=await r.json();
+el.textContent='Public IP: '+d.ip;
+log('Public IP lookup');
+}catch(e){el.textContent='Could not retrieve IP. Check internet connection.';}
+}
+async function dnsLookup(){
+let domain=document.getElementById('dnsDomain').value.trim();
+let el=document.getElementById('dnsResult');
+if(!/^(?=.{1,253}$)([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(domain)){
+el.textContent='Enter a valid domain name.';
+return;
+}
+el.textContent='Looking up DNS...';
+try{
+let r=await fetch('https://dns.google/resolve?name='+encodeURIComponent(domain)+'&type=A');
+if(!r.ok)throw Error();
+let d=await r.json();
+el.textContent='Domain: '+domain+'\nStatus: '+d.Status+'\nA records:\n'+
+(d.Answer||[]).map(x=>x.data).join('\n');
+log('DNS lookup: '+domain);
+}catch(e){el.textContent='DNS lookup failed.';}
+}
+function validURL(value){
+try{
+let u=new URL(value);
+return u.protocol==='https:'||u.protocol==='http:'?u:null;
+}catch(e){return null;}
+}
+async function checkSite(){
+let u=validURL(document.getElementById('site').value.trim());
+let el=document.getElementById('siteResult');
+if(!u){el.textContent='Enter a valid HTTP or HTTPS URL.';return;}
+el.textContent='Checking public security information...';
+try{
+let r=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(u.href));
+el.textContent='The website responded to the public proxy request.\nHTTP status: '+r.status+
+'\nThis browser check cannot inspect all security headers or prove a website is safe.';
+log('Website response checked: '+u.hostname);
+}catch(e){
+el.textContent='Could not inspect this site through the public proxy. This does not prove the site is unsafe.';
+}
+}
+function checkSSL(){
+let u=validURL(document.getElementById('sslSite').value.trim());
+let el=document.getElementById('sslResult');
+if(!u){el.textContent='Enter a valid URL.';return;}
+el.textContent=u.protocol==='https:'
+?'HTTPS URL detected. Browser uses encrypted HTTPS transport when the connection is valid.\nFull certificate details require a server-side checker.'
+:'HTTP detected. This URL does not use HTTPS.';
+log('HTTPS check: '+u.hostname);
+}
+function togglePass(){
+let p=document.getElementById('pass');
+p.type=p.type==='password'?'text':'password';
+}
+function testPassword(){
+let p=document.getElementById('pass').value;
+let score=0;
+if(p.length>=12)score++;
+if(/[A-Z]/.test(p))score++;
+if(/[a-z]/.test(p))score++;
+if(/[0-9]/.test(p))score++;
+if(/[^A-Za-z0-9]/.test(p))score++;
+let levels=['Very weak','Weak','Fair','Good','Strong','Very strong'];
+document.getElementById('passResult').textContent=
+'Strength: '+levels[score]+'\nChecks passed: '+score+'/5'+
+'\nLength: '+p.length+
+'\nNever reuse passwords or share real passwords with websites.';
+log('Password strength test');
+}
+async function readQR(){
+let f=document.getElementById('qrFile').files[0];
+let el=document.getElementById('qrResult');
+if(!f){el.textContent='Choose a QR image first.';return;}
+if(!('BarcodeDetector' in window)){
+el.textContent='This browser does not support image QR detection. Try a supported browser.';
+return;
+}
+try{
+let detector=new BarcodeDetector({formats:['qr_code']});
+let bitmap=await createImageBitmap(f);
+let codes=await detector.detect(bitmap);
+el.textContent=codes.length?codes.map(c=>c.rawValue).join('\n'):'No QR code found.';
+log('QR image scanned');
+}catch(e){el.textContent='Could not read this QR image.';}
+}
+function runCommand(){
+let input=document.getElementById('command');
+let c=input.value.trim().toLowerCase();
+let el=document.getElementById('terminalResult');
+let commands={
+help:'Available commands: help, status, date, network, about, clear',
+status:'SYSTEM ONLINE\nETHICAL MODE ACTIVE',
+date:new Date().toString(),
+network:'Online: '+navigator.onLine+'\nBrowser connection information only.',
+about:'MITRAN CYBER LAB\nEducational cybersecurity workspace.',
+clear:''
+};
+if(c==='clear')el.textContent='';
+else el.textContent+=' \n> '+c+'\n'+(commands[c]||'Unknown command. Type help.');
+input.value='';
+log('Terminal command: '+c);
+}
+function clearHistory(){
+historyItems.length=0;
+document.getElementById('historyResult').textContent='History cleared.';
+}
+</script>
+</body>
+</html>
